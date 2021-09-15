@@ -37,8 +37,15 @@ class PokemonDamageScrapper(scrapy.Spider):
     def parse_pokemon(self, response):
         name = response.meta.get('name')
     
+        texth1 = response.xpath('string(//*[@id="content"]/main/div[2]/table[1]/tr/td[1]/table/tr/td[2]/h1/text())').get()
+        array = texth1.split(";", 1)
+        array[0] = array[0].strip()
+
+        print(array)
+
         yield {
-            'pokemon_name' : name,
+            'Ndex' : array[0],
+            'pokemon_name' : array[1],
             'Normal'   : response.xpath('string(//h2[.="Weakness"]/../../../tr[3]/td[1]/text())').get(),
             'Fire'     : response.xpath('string(//h2[.="Weakness"]/../../../tr[3]/td[2]/text())').get(),
             'Water'    : response.xpath('string(//h2[.="Weakness"]/../../../tr[3]/td[3]/text())').get(),
@@ -58,3 +65,7 @@ class PokemonDamageScrapper(scrapy.Spider):
             'Steel'    : response.xpath('string(//h2[.="Weakness"]/../../../tr[3]/td[17]/text())').get(),
             'Fairy'    : response.xpath('string(//h2[.="Weakness"]/../../../tr[3]/td[18]/text())').get() 
         }
+
+        # //*[@id="content"]/main/div[2]/table[1]/tbody/tr/td[1]/table/tbody/tr/td[2]/h1
+        # //*[@id="content"]/main/div[2]/table[1]/tbody/tr/td[1]/table/tbody/tr/td[2]/h1
+        # #content > main > div:nth-child(2) > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(2) > h1

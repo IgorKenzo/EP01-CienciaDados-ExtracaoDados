@@ -45,7 +45,7 @@ class PokemonScrapper(scrapy.Spider):
         #         a = a.split(" ")
         #         if len(a) > 1 or a == "being":
         #             a = None
-        evo = ""    
+        evo = set()    
         t = response.xpath('string(//*[@id="mw-content-text"])').get()
         while True:
             e = re.search(r"(?<=nto| or)(?: either)?((?:\s[A-Z][\w\.'-]+)+) (?=(starting)|(when))", t)
@@ -55,8 +55,9 @@ class PokemonScrapper(scrapy.Spider):
                 if which != None:
                     if e.span()[0] > which.span()[0]: break
 
-                evo += e.group(1).strip() + "#"
+                evo.add(e.group(1).strip())
                 t = t[0:e.span()[0]:] + t[e.span()[1]::]
+        evos = ";".join(evo)
 
         # print(response.url)
         # print(response.css('td big big b::text').get())
@@ -69,7 +70,7 @@ class PokemonScrapper(scrapy.Spider):
             't1' : response.xpath('string(//*[@id="mw-content-text"]/div/table[2]/tbody/tr[2]/td/table/tbody/tr/td[1]/table/tbody/tr/td[1])').get().strip(),
             't2' : response.xpath('string(//*[@id="mw-content-text"]/div/table[2]/tbody/tr[2]/td/table/tbody/tr/td[1]/table/tbody/tr/td[2])').get().strip(),
             'color' : response.xpath('string(//a[@title="List of Pokémon by color"]/../../table/tbody/tr/td/text())').get().strip(),
-           'evolution' : evo if evo != "" else "Final"
+            'evolution' : evos if evos != "" else "Final"
         #    'evolution' : a if a != None else "Final"
             #a[title*="List of Pokémon by color"]
             #//a[title="List of Pokémon by color"]/../../tbody/tr/td/text())
