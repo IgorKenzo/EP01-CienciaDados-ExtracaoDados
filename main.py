@@ -12,6 +12,8 @@ class PokemonScrapper(scrapy.Spider):
 
     def parse(self, response):
 
+        # Colocarum comentário pra mostrar como usar o git desktop
+
         pokemons = response.css('tr')
 
         for pokemon in pokemons:
